@@ -308,9 +308,9 @@ export default function App() {
 
   useEffect(() => {
     // Initialize audio
-    audioRef.current = new Audio('https://cdn.pixabay.com/audio/2024/02/07/audio_823635957b.mp3');
+    audioRef.current = new Audio('https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3');
     audioRef.current.loop = true;
-    audioRef.current.volume = 0.2;
+    audioRef.current.volume = 0.15;
 
     return () => {
       if (audioRef.current) {
@@ -323,14 +323,30 @@ export default function App() {
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.muted = isMuted;
-      if (!isMuted && gameState !== 'home') {
+      if (!isMuted && gameState !== 'home' && gameState !== 'loading') {
         audioRef.current.play().catch(() => {
-          // Autoplay might be blocked until user interaction
-          console.log("Autoplay blocked");
+          console.log("Autoplay blocked, waiting for interaction");
         });
       }
     }
   }, [isMuted, gameState]);
+
+  // Global click listener to bypass autoplay restrictions
+  useEffect(() => {
+    const unlockAudio = () => {
+      if (audioRef.current && !isMuted && audioRef.current.paused) {
+        audioRef.current.play().catch(() => {});
+      }
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
+    };
+    window.addEventListener('click', unlockAudio);
+    window.addEventListener('touchstart', unlockAudio);
+    return () => {
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
+    };
+  }, [isMuted]);
 
   const toggleMute = () => {
     setIsMuted(prev => {
