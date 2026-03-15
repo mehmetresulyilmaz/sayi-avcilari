@@ -260,6 +260,7 @@ export default function App() {
     try {
       const currentAvatar = newAvatar || avatar;
       await setDoc(doc(db, 'users', user.uid), {
+        uid: user.uid,
         stats: newStats,
         avatar: currentAvatar,
         updatedAt: serverTimestamp()
@@ -634,8 +635,14 @@ export default function App() {
             <button onClick={() => setGameState('home')} className="p-1.5 sm:p-2 bg-white rounded-full shadow-sm border border-[#5A5A40]/10 hover:bg-gray-50 transition-colors">
               <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#5A5A40]" />
             </button>
-            <div className="scale-75 sm:scale-100 origin-left">
+            <div className="scale-75 sm:scale-100 origin-left flex items-center gap-2">
               <AvatarDisplay config={avatar} size="sm" />
+              {user && (
+                <div className="hidden sm:block">
+                  <p className="text-[10px] font-bold text-[#A3A380] uppercase leading-none">Avcı</p>
+                  <p className="text-xs font-bold text-[#5A5A40]">{(user.displayName || 'Kahraman').split(' ')[0]}</p>
+                </div>
+              )}
             </div>
             <button 
               onClick={() => {
@@ -675,7 +682,7 @@ export default function App() {
         </div>
       )}
 
-      <div className="flex-1 w-full flex items-center justify-center overflow-hidden pt-12">
+      <div className="flex-1 w-full flex items-center justify-center overflow-hidden pt-12 relative z-10">
         <AnimatePresence mode="wait">
           {gameState === 'loading' && (
             <motion.div 
@@ -699,11 +706,19 @@ export default function App() {
               className="max-w-md w-full text-center space-y-6"
             >
               <div className="space-y-1 sm:space-y-3">
-                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-[24px] sm:rounded-[28px] shadow-xl mx-auto flex items-center justify-center border-2 border-[#5A5A40]/10">
-                  <BrainCircuit className="w-8 h-8 sm:w-10 sm:h-10 text-[#5A5A40]" />
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-[24px] sm:rounded-[28px] shadow-xl mx-auto flex items-center justify-center border-2 border-[#5A5A40]/10 overflow-hidden">
+                  {user ? (
+                    <img src={user.photoURL} alt="" className="w-full h-full object-cover" referrerPolicy="no-referrer" />
+                  ) : (
+                    <BrainCircuit className="w-8 h-8 sm:w-10 sm:h-10 text-[#5A5A40]" />
+                  )}
                 </div>
                 <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#2D2D2A]">Sayı Avcıları</h1>
-                <p className="text-[#5A5A40] text-xs sm:text-sm font-medium">Matematik hiç bu kadar eğlenceli olmamıştı!</p>
+                {user ? (
+                  <p className="text-[#5A5A40] text-xs sm:text-sm font-bold">Hoş geldin, <span className="text-[#A3A380]">{user.displayName}</span>!</p>
+                ) : (
+                  <p className="text-[#5A5A40] text-xs sm:text-sm font-medium">Matematik hiç bu kadar eğlenceli olmamıştı!</p>
+                )}
               </div>
 
               <div className="space-y-2 sm:space-y-3 pt-2 sm:pt-4">
@@ -745,7 +760,7 @@ export default function App() {
                   Liderlik Tablosu
                 </button>
 
-                {!user && (
+                {!user ? (
                   <div className="pt-4 space-y-3">
                     <div className="h-px bg-[#5A5A40]/10 w-full" />
                     <p className="text-[#5A5A40]/60 text-[10px] font-bold uppercase tracking-wider">İlerlemeni Kaydet</p>
@@ -755,6 +770,16 @@ export default function App() {
                     >
                       <LogIn className="w-4 h-4" />
                       Google ile Giriş Yap
+                    </button>
+                  </div>
+                ) : (
+                  <div className="pt-4">
+                    <button 
+                      onClick={handleLogout}
+                      className="w-full py-3 text-red-500/60 hover:text-red-500 font-bold text-xs flex items-center justify-center gap-2 transition-colors"
+                    >
+                      <LogOut className="w-4 h-4" />
+                      Oturumu Kapat
                     </button>
                   </div>
                 )}
@@ -1073,7 +1098,7 @@ export default function App() {
               </div>
 
               {/* Question Card */}
-              <div className="w-full bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-10 shadow-2xl border border-[#5A5A40]/10 relative overflow-hidden">
+              <div className="w-full bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-10 shadow-2xl border border-[#5A5A40]/10 relative overflow-hidden z-10 pointer-events-auto">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentStep}
@@ -1096,7 +1121,7 @@ export default function App() {
                           onClick={() => handleAnswer(opt)}
                           disabled={feedback !== null}
                           className={`
-                            py-3 sm:py-4 px-2 sm:px-4 rounded-xl sm:rounded-2xl text-base sm:text-xl font-bold transition-all duration-300
+                            py-3 sm:py-4 px-2 sm:px-4 rounded-xl sm:rounded-2xl text-base sm:text-xl font-bold transition-all duration-300 relative z-20
                             ${feedback === null ? 'bg-[#F5F5F0] hover:bg-[#EFEBCE] text-[#5A5A40] hover:scale-[1.02]' : ''}
                             ${feedback === 'correct' && opt === problems[currentStep].answer ? 'bg-green-500 text-white scale-105' : ''}
                             ${feedback === 'wrong' && opt !== problems[currentStep].answer ? 'opacity-50' : ''}
@@ -1117,7 +1142,7 @@ export default function App() {
                       initial={{ opacity: 0, scale: 0.8 }}
                       animate={{ opacity: 1, scale: 1 }}
                       exit={{ opacity: 0, scale: 1.2 }}
-                      className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-10"
+                      className="absolute inset-0 flex items-center justify-center bg-white/80 backdrop-blur-sm z-30"
                     >
                       {feedback === 'correct' ? (
                         <div className="flex flex-col items-center text-green-500">
