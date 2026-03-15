@@ -570,12 +570,12 @@ export default function App() {
   return (
     <div className="h-[100dvh] w-full flex flex-col items-center justify-between py-4 sm:py-6 px-2 sm:px-4 font-sans bg-[#F5F5F0] overflow-hidden relative">
       {/* Global Controls (Mute) */}
-      <div className="fixed top-4 right-4 z-[60] flex gap-2">
+      <div className="fixed bottom-20 right-4 sm:bottom-24 sm:right-6 z-[60] flex gap-2">
         <button 
           onClick={toggleMute}
-          className="p-2.5 bg-white rounded-full shadow-lg border border-[#5A5A40]/10 hover:bg-gray-50 transition-all active:scale-95"
+          className="p-3 bg-white rounded-full shadow-2xl border border-[#5A5A40]/10 hover:bg-gray-50 transition-all active:scale-95 group"
         >
-          {isMuted ? <VolumeX className="w-5 h-5 text-red-400" /> : <Volume2 className="w-5 h-5 text-[#5A5A40]" />}
+          {isMuted ? <VolumeX className="w-6 h-6 text-red-400" /> : <Volume2 className="w-6 h-6 text-[#5A5A40]" />}
         </button>
       </div>
 
@@ -644,18 +644,18 @@ export default function App() {
             </button>
           </div>
           <div className="flex gap-1.5 pointer-events-auto items-center">
-            {stats.badges.map((b, i) => (
+            {stats.badges.length > 0 && (
               <button 
-                key={i} 
                 onClick={() => {
-                  setMarketMessage("Bu senin başarı madalyan! 🏅");
+                  setMarketMessage(`Toplam ${stats.badges.length} madalyan var! 🏅`);
                   setTimeout(() => setMarketMessage(null), 3000);
                 }}
-                className="w-8 h-8 bg-white rounded-full flex items-center justify-center shadow-sm border border-[#5A5A40]/10 cursor-help pointer-events-auto hover:bg-gray-50 transition-colors"
+                className="bg-white px-2.5 py-1.5 rounded-xl shadow-sm border border-[#5A5A40]/10 flex items-center gap-1.5 hover:bg-gray-50 transition-colors"
               >
-                <Medal className="w-4 h-4 text-[#5A5A40]" />
+                <Medal className="w-4 h-4 text-yellow-600" />
+                <span className="font-bold text-xs text-[#5A5A40]">{stats.badges.length}</span>
               </button>
-            ))}
+            )}
             <button 
               onClick={handleLogout}
               className="p-2 bg-white rounded-full shadow-sm border border-red-100 hover:bg-red-50 transition-colors"
