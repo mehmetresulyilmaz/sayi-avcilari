@@ -303,16 +303,18 @@ export default function App() {
   };
 
   return (
-    <div className="h-screen w-full flex flex-col items-center justify-between py-6 px-4 font-sans bg-[#F5F5F0] overflow-hidden relative">
+    <div className="h-[100dvh] w-full flex flex-col items-center justify-between py-4 sm:py-6 px-2 sm:px-4 font-sans bg-[#F5F5F0] overflow-hidden relative">
       {/* Header Stats */}
       {gameState !== 'home' && (
-        <div className="absolute top-4 left-4 right-4 flex justify-between items-center z-50 pointer-events-none">
-          <div className="flex items-center gap-3 pointer-events-auto">
-            <button onClick={() => setGameState('home')} className="p-2 bg-white rounded-full shadow-sm border border-[#5A5A40]/10 hover:bg-gray-50 transition-colors">
-              <ChevronLeft className="w-5 h-5 text-[#5A5A40]" />
+        <div className="absolute top-2 sm:top-4 left-2 sm:left-4 right-2 sm:right-4 flex justify-between items-center z-50 pointer-events-none">
+          <div className="flex items-center gap-1.5 sm:gap-3 pointer-events-auto">
+            <button onClick={() => setGameState('home')} className="p-1.5 sm:p-2 bg-white rounded-full shadow-sm border border-[#5A5A40]/10 hover:bg-gray-50 transition-colors">
+              <ChevronLeft className="w-4 h-4 sm:w-5 sm:h-5 text-[#5A5A40]" />
             </button>
-            <AvatarDisplay config={avatar} size="sm" />
-            <div className="bg-white px-3 py-1.5 rounded-xl shadow-sm border border-[#5A5A40]/10">
+            <div className="scale-75 sm:scale-100 origin-left">
+              <AvatarDisplay config={avatar} size="sm" />
+            </div>
+            <div className="bg-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-xl shadow-sm border border-[#5A5A40]/10">
               <span className="text-[10px] font-bold text-[#A3A380] block uppercase leading-none mb-1">Altın</span>
               <div className="flex items-center gap-1">
                 <Coins className="w-3.5 h-3.5 text-yellow-500" />
@@ -346,23 +348,23 @@ export default function App() {
               exit={{ opacity: 0, scale: 1.1 }}
               className="max-w-md w-full text-center space-y-6"
             >
-              <div className="space-y-3">
-                <div className="w-20 h-20 bg-white rounded-[28px] shadow-xl mx-auto flex items-center justify-center border-2 border-[#5A5A40]/10">
-                  <BrainCircuit className="w-10 h-10 text-[#5A5A40]" />
+              <div className="space-y-1 sm:space-y-3">
+                <div className="w-16 h-16 sm:w-20 sm:h-20 bg-white rounded-[24px] sm:rounded-[28px] shadow-xl mx-auto flex items-center justify-center border-2 border-[#5A5A40]/10">
+                  <BrainCircuit className="w-8 h-8 sm:w-10 sm:h-10 text-[#5A5A40]" />
                 </div>
-                <h1 className="font-serif text-4xl sm:text-5xl font-bold text-[#2D2D2A]">Sayı Avcıları</h1>
-                <p className="text-[#5A5A40] text-sm font-medium">Matematik hiç bu kadar eğlenceli olmamıştı!</p>
+                <h1 className="font-serif text-3xl sm:text-5xl font-bold text-[#2D2D2A]">Sayı Avcıları</h1>
+                <p className="text-[#5A5A40] text-xs sm:text-sm font-medium">Matematik hiç bu kadar eğlenceli olmamıştı!</p>
               </div>
 
-              <div className="space-y-3 pt-4">
+              <div className="space-y-2 sm:space-y-3 pt-2 sm:pt-4">
                 <button 
                   onClick={() => {
                     setGameState('avatar-creation');
                     if (!isMuted && audioRef.current) audioRef.current.play().catch(() => {});
                   }}
-                  className="w-full py-4 bg-[#5A5A40] text-white rounded-[20px] font-bold text-lg shadow-lg hover:bg-[#4A4A35] transition-all flex items-center justify-center gap-3 group"
+                  className="w-full py-3 sm:py-4 bg-[#5A5A40] text-white rounded-[16px] sm:rounded-[20px] font-bold text-base sm:text-lg shadow-lg hover:bg-[#4A4A35] transition-all flex items-center justify-center gap-2 sm:gap-3 group"
                 >
-                  <MapIcon className="w-5 h-5" />
+                  <MapIcon className="w-4 h-4 sm:w-5 sm:h-5" />
                   Hikaye Modu
                   <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
                 </button>
@@ -372,7 +374,7 @@ export default function App() {
                     setGameState('quick-play-levels');
                     if (!isMuted && audioRef.current) audioRef.current.play().catch(() => {});
                   }}
-                  className="w-full py-4 bg-white text-[#5A5A40] border-2 border-[#5A5A40]/10 rounded-[20px] font-bold text-lg shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center gap-3"
+                  className="w-full py-3 sm:py-4 bg-white text-[#5A5A40] border-2 border-[#5A5A40]/10 rounded-[16px] sm:rounded-[20px] font-bold text-base sm:text-lg shadow-sm hover:bg-gray-50 transition-all flex items-center justify-center gap-2 sm:gap-3"
                 >
                   <RotateCcw className="w-5 h-5" />
                   Hızlı Antrenman
@@ -413,12 +415,12 @@ export default function App() {
                 <p className="text-sm text-[#5A5A40]">Seviyeni seç ve yeteneklerini geliştir!</p>
               </div>
 
-              <div className="grid grid-cols-3 sm:grid-cols-5 gap-3 max-h-[60vh] overflow-y-auto p-2 scrollbar-hide">
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2 sm:gap-3 max-h-[70vh] overflow-y-auto p-1 sm:p-2 scrollbar-hide">
                 {QUICK_LEVELS.map((l) => (
                   <button
                     key={l.id}
                     onClick={() => startQuickLevel(l.id)}
-                    className="aspect-square bg-white rounded-2xl shadow-sm border border-[#5A5A40]/10 flex flex-col items-center justify-center gap-1 hover:scale-105 transition-transform"
+                    className="aspect-square bg-white rounded-xl sm:rounded-2xl shadow-sm border border-[#5A5A40]/10 flex flex-col items-center justify-center gap-0.5 sm:gap-1 hover:scale-105 transition-transform"
                   >
                     <span className="text-xl font-bold text-[#5A5A40]">{l.id}</span>
                     <span className="text-[8px] uppercase font-bold text-[#A3A380] text-center px-1">
@@ -436,13 +438,15 @@ export default function App() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, scale: 0.95 }}
-              className="max-w-2xl w-full bg-white rounded-[32px] p-6 sm:p-8 shadow-2xl border border-[#5A5A40]/10 overflow-y-auto max-h-[85vh] scrollbar-hide"
+              className="max-w-2xl w-full bg-white rounded-[24px] sm:rounded-[32px] p-4 sm:p-8 shadow-2xl border border-[#5A5A40]/10 overflow-hidden flex flex-col max-h-[85dvh]"
             >
-              <h1 className="font-serif text-2xl font-bold mb-6 text-center text-[#2D2D2A]">Kahramanını Yarat</h1>
+              <h1 className="font-serif text-xl sm:text-2xl font-bold mb-2 sm:mb-6 text-center text-[#2D2D2A] shrink-0">Kahramanını Yarat</h1>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
-                <div className="space-y-6">
-                  <AvatarDisplay config={avatar} size="md" />
+              <div className="flex flex-col md:grid md:grid-cols-2 gap-4 sm:gap-8 items-center flex-1 overflow-y-auto scrollbar-hide pb-2">
+                <div className="space-y-3 sm:space-y-6 shrink-0">
+                  <div className="scale-75 sm:scale-100 origin-center">
+                    <AvatarDisplay config={avatar} size="md" />
+                  </div>
                   <div className="flex justify-center gap-2">
                     {['#FFDBAC', '#F1C27D', '#E0AC69', '#8D5524'].map(c => (
                       <button 
@@ -502,7 +506,7 @@ export default function App() {
 
                   <button 
                     onClick={() => setGameState('map')}
-                    className="w-full py-3 bg-[#5A5A40] text-white rounded-xl font-bold shadow-lg hover:bg-[#4A4A35] transition-all flex items-center justify-center gap-2 group mt-2"
+                    className="w-full py-2.5 sm:py-3 bg-[#5A5A40] text-white rounded-xl font-bold shadow-lg hover:bg-[#4A4A35] transition-all flex items-center justify-center gap-2 group mt-1 sm:mt-2"
                   >
                     Maceraya Başla
                     <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -519,12 +523,12 @@ export default function App() {
               animate={{ opacity: 1 }}
               className="max-w-4xl w-full px-2"
             >
-              <div className="text-center mb-8">
-                <h2 className="font-serif text-3xl font-bold text-[#2D2D2A] mb-1">Dünya Haritası</h2>
-                <p className="text-sm text-[#5A5A40]">Bilgelik Kristali'ne giden yolu seç!</p>
+              <div className="text-center mb-4 sm:mb-8">
+                <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2D2D2A] mb-0.5 sm:mb-1">Dünya Haritası</h2>
+                <p className="text-xs sm:text-sm text-[#5A5A40]">Bilgelik Kristali'ne giden yolu seç!</p>
               </div>
 
-              <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
+              <div className="grid grid-cols-2 lg:grid-cols-4 gap-2 sm:gap-4">
                 {LEVELS.map((level, idx) => {
                   const isCompleted = stats.completedLevels.includes(level.id);
                   const isLocked = idx > 0 && !stats.completedLevels.includes(LEVELS[idx-1].id);
@@ -536,19 +540,19 @@ export default function App() {
                       onClick={() => !isLocked && startLevel(level.id)}
                       disabled={isLocked}
                       className={`
-                        relative p-5 rounded-[24px] text-left transition-all h-48 flex flex-col justify-between
+                        relative p-3 sm:p-5 rounded-[20px] sm:rounded-[24px] text-left transition-all h-32 sm:h-48 flex flex-col justify-between
                         ${isLocked ? 'bg-gray-200 opacity-50 grayscale cursor-not-allowed' : 'bg-white shadow-xl border border-[#5A5A40]/10'}
                       `}
                     >
-                      <div className="w-10 h-10 rounded-xl flex items-center justify-center mb-2" style={{ backgroundColor: level.color + '20' }}>
-                        {level.id === 'addition' && <Tent className="w-5 h-5" style={{ color: level.color }} />}
-                        {level.id === 'subtraction' && <Sun className="w-5 h-5" style={{ color: level.color }} />}
-                        {level.id === 'multiplication' && <Mountain className="w-5 h-5" style={{ color: level.color }} />}
-                        {level.id === 'division' && <Snowflake className="w-5 h-5" style={{ color: level.color }} />}
+                      <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-lg sm:rounded-xl flex items-center justify-center mb-1 sm:mb-2" style={{ backgroundColor: level.color + '20' }}>
+                        {level.id === 'addition' && <Tent className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: level.color }} />}
+                        {level.id === 'subtraction' && <Sun className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: level.color }} />}
+                        {level.id === 'multiplication' && <Mountain className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: level.color }} />}
+                        {level.id === 'division' && <Snowflake className="w-4 h-4 sm:w-5 sm:h-5" style={{ color: level.color }} />}
                       </div>
                       <div>
-                        <h3 className="font-serif text-lg font-bold text-[#2D2D2A] mb-0.5 leading-tight">{level.title}</h3>
-                        <p className="text-[10px] text-[#5A5A40] leading-tight line-clamp-2">{level.description}</p>
+                        <h3 className="font-serif text-sm sm:text-lg font-bold text-[#2D2D2A] mb-0.5 leading-tight">{level.title}</h3>
+                        <p className="text-[9px] sm:text-[10px] text-[#5A5A40] leading-tight line-clamp-2">{level.description}</p>
                       </div>
                       {isCompleted && (
                         <div className="absolute top-3 right-3 text-green-500">
@@ -567,20 +571,22 @@ export default function App() {
               key="story"
               initial={{ opacity: 0, scale: 0.9 }}
               animate={{ opacity: 1, scale: 1 }}
-              className="max-w-md w-full bg-white rounded-[32px] p-8 shadow-2xl border border-[#5A5A40]/10 text-center"
+              className="max-w-md w-full bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-8 shadow-2xl border border-[#5A5A40]/10 text-center"
             >
-              <AvatarDisplay config={avatar} size="md" />
-              <div className="mt-6 mb-8">
-                <h3 className="font-serif text-xl font-bold text-[#2D2D2A] mb-3">
+              <div className="scale-75 sm:scale-100 origin-center">
+                <AvatarDisplay config={avatar} size="md" />
+              </div>
+              <div className="mt-2 sm:mt-6 mb-4 sm:mb-8">
+                <h3 className="font-serif text-lg sm:text-xl font-bold text-[#2D2D2A] mb-1 sm:mb-3">
                   {gameState === 'story-intro' ? 'Yeni Bölüm!' : 'Tebrikler!'}
                 </h3>
-                <p className="text-sm text-[#5A5A40] leading-relaxed italic">
+                <p className="text-xs sm:text-sm text-[#5A5A40] leading-relaxed italic">
                   "{gameState === 'story-intro' ? currentLevel.storyIntro : currentLevel.storyOutro}"
                 </p>
               </div>
               <button 
                 onClick={() => gameState === 'story-intro' ? setGameState('playing') : completeLevel()}
-                className="w-full py-3.5 bg-[#5A5A40] text-white rounded-xl font-bold flex items-center justify-center gap-2"
+                className="w-full py-2.5 sm:py-3.5 bg-[#5A5A40] text-white rounded-xl font-bold flex items-center justify-center gap-2 text-sm sm:text-base"
               >
                 {gameState === 'story-intro' ? 'Hadi Başlayalım!' : 'Haritaya Dön'}
                 <ArrowRight className="w-4 h-4" />
@@ -596,27 +602,27 @@ export default function App() {
               className="w-full max-w-xl flex flex-col items-center"
             >
               {/* Responsive Progress Bar */}
-              <div className="w-full flex justify-between items-center mb-6 gap-4 px-2">
-                <div className="flex gap-1.5 justify-center">
+              <div className="w-full flex justify-between items-center mb-3 sm:mb-6 gap-2 sm:gap-4 px-1 sm:px-2">
+                <div className="flex gap-1 sm:gap-1.5 justify-center">
                   {problems.map((_, i) => (
                     <div 
                       key={i}
-                      className={`w-7 h-7 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-xs font-bold transition-all
+                      className={`w-6 h-6 sm:w-8 sm:h-8 rounded-full flex items-center justify-center text-[10px] sm:text-xs font-bold transition-all
                         ${i === currentStep ? 'bg-[#5A5A40] text-white scale-110 shadow-md' : i < currentStep ? 'bg-green-500 text-white' : 'bg-white text-[#5A5A40] border border-[#5A5A40]/10'}
                       `}
                     >
-                      {i < currentStep ? <CheckCircle2 className="w-3.5 h-3.5" /> : i + 1}
+                      {i < currentStep ? <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" /> : i + 1}
                     </div>
                   ))}
                 </div>
-                <div className="bg-white px-3 py-1.5 rounded-full border border-[#5A5A40]/10 flex items-center gap-2 shadow-sm">
-                  <Star className="w-3.5 h-3.5 text-yellow-500 fill-yellow-500" />
-                  <span className="font-bold text-xs text-[#5A5A40] whitespace-nowrap">{isQuickPlay ? `Seviye ${quickLevel}` : currentLevel.title}</span>
+                <div className="bg-white px-2 sm:px-3 py-1 sm:py-1.5 rounded-full border border-[#5A5A40]/10 flex items-center gap-1 sm:gap-2 shadow-sm">
+                  <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-yellow-500 fill-yellow-500" />
+                  <span className="font-bold text-[10px] sm:text-xs text-[#5A5A40] whitespace-nowrap">{isQuickPlay ? `Seviye ${quickLevel}` : currentLevel.title}</span>
                 </div>
               </div>
 
               {/* Question Card */}
-              <div className="w-full bg-white rounded-[32px] p-6 sm:p-10 shadow-2xl border border-[#5A5A40]/10 relative overflow-hidden">
+              <div className="w-full bg-white rounded-[24px] sm:rounded-[32px] p-5 sm:p-10 shadow-2xl border border-[#5A5A40]/10 relative overflow-hidden">
                 <AnimatePresence mode="wait">
                   <motion.div
                     key={currentStep}
@@ -625,21 +631,21 @@ export default function App() {
                     exit={{ x: -30, opacity: 0 }}
                     className="text-center"
                   >
-                    <span className="text-[10px] uppercase tracking-widest font-bold text-[#A3A380] mb-3 block">
+                    <span className="text-[9px] sm:text-[10px] uppercase tracking-widest font-bold text-[#A3A380] mb-2 sm:mb-3 block">
                       Soru {currentStep + 1} / {problems.length}
                     </span>
-                    <h2 className="font-serif text-4xl sm:text-5xl font-bold text-[#2D2D2A] mb-8">
+                    <h2 className="font-serif text-3xl sm:text-5xl font-bold text-[#2D2D2A] mb-6 sm:mb-8">
                       {problems[currentStep].question}
                     </h2>
 
-                    <div className="grid grid-cols-2 gap-3">
+                    <div className="grid grid-cols-2 gap-2 sm:gap-3">
                       {problems[currentStep].options.map((opt, idx) => (
                         <button
                           key={idx}
                           onClick={() => handleAnswer(opt)}
                           disabled={feedback !== null}
                           className={`
-                            py-4 px-4 rounded-2xl text-lg sm:text-xl font-bold transition-all duration-300
+                            py-3 sm:py-4 px-2 sm:px-4 rounded-xl sm:rounded-2xl text-base sm:text-xl font-bold transition-all duration-300
                             ${feedback === null ? 'bg-[#F5F5F0] hover:bg-[#EFEBCE] text-[#5A5A40] hover:scale-[1.02]' : ''}
                             ${feedback === 'correct' && opt === problems[currentStep].answer ? 'bg-green-500 text-white scale-105' : ''}
                             ${feedback === 'wrong' && opt !== problems[currentStep].answer ? 'opacity-50' : ''}
