@@ -1,0 +1,78 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // ===============================================================
+    // Assumed Data Model
+    // ===============================================================
+    //
+    // Collection: users
+    // Document ID: {userId} (Firebase Auth UID)
+    // Fields:
+    //   - uid: string (required) - The user's unique ID
+    //   - email: string (optional) - The user's email
+    //   - stats: map (required) - Contains coins, badges, etc.
+    //   - avatar: map (required) - Contains skinColor, hairStyle, etc.
+    //   - updatedAt: timestamp (required) - Last update time
+    //
+    // ===============================================================
+
+    // Helper Functions
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    function isAdmin() {
+      return isAuthenticated() &&
+        (get(/databases/$(database)/documents/users/$(request.auth.uid)).data.stats.role == 'admin' ||
+          (request.auth.token.email == "mehmetresulyilmaz@gmail.com" && request.auth.token.email_verified == true));
+    }
+
+    function isValidUser(data) {
+      return data.keys().hasAll(['uid', 'stats', 'avatar', 'updatedAt']) &&
+             data.keys().hasOnly(['uid', 'email', 'stats', 'avatar', 'updatedAt']) &&
+             data.uid is string && data.uid.size() < 128 &&
+             data.stats is map &&
+             data.avatar is map &&
+             data.stats.coins is int &&
+             data.stats.coins >= 0 &&
+             data.stats.badges is list && data.stats.badges.size() < 100 &&
+             data.stats.unlockedItems is list && data.stats.unlockedItems.size() < 200 &&
+             data.stats.completedLevels is list && data.stats.completedLevels.size() < 50 &&
+             // Prevent self-promotion to admin
+             (!('role' in data.stats) || data.stats.role != 'admin' || isAdmin());
+    }
+
+    match /users/{userId} {
+      allow read: if isOwner(userId) || isAdmin();
+      allow create: if isOwner(userId) && isValidUser(request.resource.data) && 
+                      (!('role' in request.resource.data.stats) || request.resource.data.stats.role == 'user');
+      allow update: if (isOwner(userId) || isAdmin()) && isValidUser(request.resource.data) && 
+                      request.resource.data.uid == resource.data.uid &&
+                      // Ensure role isn't changed by non-admins
+                      (isAdmin() || !('role' in request.resource.data.stats) || request.resource.data.stats.role == resource.data.stats.role);
+      allow delete: if isAdmin();
+    }
+
+    match /leaderboard/{userId} {
+      allow read: if true; // Publicly readable
+      allow write: if isOwner(userId) && 
+                     request.resource.data.keys().hasAll(['displayName', 'coins', 'updatedAt']) &&
+                     request.resource.data.keys().hasOnly(['displayName', 'coins', 'updatedAt', 'photoURL']) &&
+                     request.resource.data.displayName is string &&
+                     request.resource.data.displayName.size() > 0 &&
+                     request.resource.data.displayName.size() < 50 &&
+                     request.resource.data.coins is int &&
+                     request.resource.data.coins >= 0 &&
+                     (!('photoURL' in request.resource.data) || (request.resource.data.photoURL is string && request.resource.data.photoURL.size() < 500));
+    }
+
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}

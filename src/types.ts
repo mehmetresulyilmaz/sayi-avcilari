@@ -22,4 +22,5 @@ export interface UserStats {
   coins: number;
   badges: string[];
   completedLevels: Operation[];
+  unlockedItems: string[];
 }

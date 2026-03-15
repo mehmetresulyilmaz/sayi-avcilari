@@ -1,0 +1,51 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "Stores user progress, stats, and avatar configuration.",
+      "type": "object",
+      "properties": {
+        "uid": { "type": "string", "description": "Firebase Auth UID" },
+        "email": { "type": "string", "description": "User email address" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "coins": { "type": "integer" },
+            "badges": { "type": "array", "items": { "type": "string" } },
+            "unlockedItems": { "type": "array", "items": { "type": "string" } },
+            "completedLevels": { "type": "array", "items": { "type": "integer" } }
+          }
+        },
+        "avatar": {
+          "type": "object",
+          "properties": {
+            "skinColor": { "type": "string" },
+            "hairStyle": { "type": "string" },
+            "accessory": { "type": "string" }
+          }
+        },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["uid", "stats", "avatar"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile and progress data."
+    },
+    "/leaderboard/{userId}": {
+      "schema": {
+        "type": "object",
+        "properties": {
+          "displayName": { "type": "string" },
+          "photoURL": { "type": "string" },
+          "coins": { "type": "integer" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        },
+        "required": ["displayName", "coins", "updatedAt"]
+      },
+      "description": "Public leaderboard entries."
+    }
+  }
+}
