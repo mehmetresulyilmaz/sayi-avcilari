@@ -292,8 +292,16 @@ export default function App() {
   const handleLogin = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Login failed", error);
+      let message = "Giriş yapılamadı. Lütfen tekrar deneyin.";
+      if (error.code === 'auth/unauthorized-domain') {
+        message = "Bu alan adı (domain) Firebase'de onaylanmamış. Lütfen Firebase Console'dan 'Authorized Domains' listesine bu adresi ekleyin.";
+      } else if (error.code === 'auth/popup-blocked') {
+        message = "Açılır pencere engellendi. Lütfen tarayıcınızdan izin verin.";
+      }
+      setMarketMessage(message);
+      setTimeout(() => setMarketMessage(null), 5000);
     }
   };
 

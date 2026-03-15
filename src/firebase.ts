@@ -2,8 +2,8 @@ import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider, signInWithPopup, signOut, onAuthStateChanged } from 'firebase/auth';
 import { getFirestore, doc, getDoc, setDoc, onSnapshot, serverTimestamp, collection, query, orderBy, limit, getDocs } from 'firebase/firestore';
 
-// Fallback values for local development in AI Studio
-// We use a dynamic approach to avoid build errors if the file is missing on GitHub
+// Firebase configuration
+// Hardcoded for reliability across environments (AI Studio, GitHub Pages, etc.)
 const firebaseConfig = {
   apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyAYXfbgCbGniEi9_QCdnfKIlgMVcjcTTnU",
   authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN || "ai-studio-applet-webapp-a824d.firebaseapp.com",
