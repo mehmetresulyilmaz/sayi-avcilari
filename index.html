@@ -13,7 +13,30 @@
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="./src/main.tsx"></script>
+    <script type="module" src="/src/main.tsx"></script>
+    <div id="fallback-ui" style="display:none; position:fixed; inset:0; background:#F5F5F0; flex-direction:column; align-items:center; justify-content:center; text-align:center; padding:20px; font-family:sans-serif; z-index:9999;">
+      <h2 style="color:#5A5A40;">Uygulama Yüklenemedi</h2>
+      <p style="color:#666;">Lütfen sayfayı yenileyin veya tarayıcı önbelleğini temizleyin.</p>
+      <button onclick="window.location.reload(true)" style="margin-top:20px; padding:10px 20px; background:#5A5A40; color:white; border:none; border-radius:8px; cursor:pointer;">Yeniden Dene</button>
+    </div>
+    <script>
+      // Force clear service workers to fix white screen issues
+      if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistrations().then(function(registrations) {
+          for(let registration of registrations) {
+            registration.unregister();
+          }
+        });
+      }
+      
+      // If root is empty after 10 seconds, show fallback
+      setTimeout(() => {
+        const root = document.getElementById('root');
+        if (root && root.innerHTML === '') {
+          document.getElementById('fallback-ui').style.display = 'flex';
+        }
+      }, 10000);
+    </script>
   </body>
 </html>
 

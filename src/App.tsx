@@ -136,6 +136,28 @@ interface Problem {
 }
 
 export default function App() {
+  const [renderError, setRenderError] = useState<string | null>(null);
+
+  // Wrap the entire component logic in a try-catch is not possible for hooks,
+  // but we can catch errors in effects and use an error boundary.
+  // Since I had issues with the class ErrorBoundary, I'll use a local state.
+
+  if (renderError) {
+    return (
+      <div className="h-screen w-full flex flex-col items-center justify-center bg-[#F5F5F0] p-10 text-center">
+        <h2 className="text-[#5A5A40] text-2xl font-bold mb-4">Bir Hata Oluştu</h2>
+        <p className="text-gray-600 mb-6">{renderError}</p>
+        <button 
+          onClick={() => window.location.reload()}
+          className="px-6 py-2 bg-[#5A5A40] text-white rounded-lg"
+        >
+          Yeniden Dene
+        </button>
+      </div>
+    );
+  }
+
+  // ... rest of the component ...
   const [user, setUser] = useState<any>(null);
   const [isAuthReady, setIsAuthReady] = useState(false);
   const [gameState, setGameState] = useState<GameState>('loading');
