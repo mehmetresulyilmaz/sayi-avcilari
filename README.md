@@ -20,13 +20,16 @@ Bu oyun, çocukların sayıları tanımasını, temel matematik işlemlerini (to
 - 🏆 **Gelişim Takibi:** Altınlar ve rozetlerle motivasyon artışı.
 
 ## 🚀 Hemen Oyna
-Matematik serüvenine katılmak için uygulamayı başlat!
+Matematik serüvenine katılmak için:
+👉 [Sayı Avcıları'nı Başlat](https://mehmetresulyilmaz.github.io/sayi-avcilari/)
 
 ---
 
 ### 👨‍💻 Geliştirici
-**Sayı Avcıları Ekibi**  
+**Resul (Mehmet Resul Yılmaz)**  
 *Geleceğin sayı avcıları için basit, hızlı ve eğlenceli bir çözüm.*
 
+[Portfolio](https://www.mehmetresulyilmaz.github.io) | [GitHub](https://github.com/mehmetresulyilmaz)
+
 ---
-*Created by Sayı Avcıları*
+*Created by Fuzuli Medya*

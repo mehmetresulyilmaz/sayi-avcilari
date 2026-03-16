@@ -148,49 +148,27 @@ export default function App() {
   const [marketMessage, setMarketMessage] = useState<string | null>(null);
   const [errorInfo, setErrorInfo] = useState<FirestoreErrorInfo | null>(null);
   const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
-  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
-  const [showInstallTip, setShowInstallTip] = useState(false);
   
   const [stats, setStats] = useState<UserStats>(() => {
-    try {
-      const local = localStorage.getItem('guest_stats');
-      return local ? JSON.parse(local) : {
-        coins: 0,
-        badges: [],
-        completedLevels: [],
-        unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3'],
-        worldLevel: 1
-      };
-    } catch (e) {
-      return {
-        coins: 0,
-        badges: [],
-        completedLevels: [],
-        unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3'],
-        worldLevel: 1
-      };
-    }
+    const local = localStorage.getItem('guest_stats');
+    return local ? JSON.parse(local) : {
+      coins: 0,
+      badges: [],
+      completedLevels: [],
+      unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3'],
+      worldLevel: 1
+    };
   });
 
   const [avatar, setAvatar] = useState<AvatarConfig>(() => {
-    try {
-      const local = localStorage.getItem('guest_avatar');
-      return local ? JSON.parse(local) : {
-        skinColor: '#FFDBAC',
-        hairStyle: 'short',
-        hairColor: '#4B2C20',
-        outfitColor: '#5A5A40',
-        accessory: 'none'
-      };
-    } catch (e) {
-      return {
-        skinColor: '#FFDBAC',
-        hairStyle: 'short',
-        hairColor: '#4B2C20',
-        outfitColor: '#5A5A40',
-        accessory: 'none'
-      };
-    }
+    const local = localStorage.getItem('guest_avatar');
+    return local ? JSON.parse(local) : {
+      skinColor: '#FFDBAC',
+      hairStyle: 'short',
+      hairColor: '#4B2C20',
+      outfitColor: '#5A5A40',
+      accessory: 'none'
+    };
   });
 
   const [isMuted, setIsMuted] = useState(false);
@@ -228,16 +206,7 @@ export default function App() {
         setGameState('home');
       }
     });
-
-    // Safety timeout: If loading takes more than 5 seconds, force home state
-    const timer = setTimeout(() => {
-      setGameState(prev => prev === 'loading' ? 'home' : prev);
-    }, 5000);
-
-    return () => {
-      unsubscribe();
-      clearTimeout(timer);
-    };
+    return () => unsubscribe();
   }, []);
 
   // Firestore Sync
@@ -280,42 +249,11 @@ export default function App() {
     return () => unsubscribe();
   }, [user, isAuthReady]);
 
-  // PWA Install Prompt
-  useEffect(() => {
-    const handleBeforeInstallPrompt = (e: any) => {
-      e.preventDefault();
-      setDeferredPrompt(e);
-    };
-
-    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
-    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
-    
-    if (isIOS && !isStandalone) {
-      setShowInstallTip(true);
-    }
-
-    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
-  }, []);
-
-  const handleInstallClick = async () => {
-    if (!deferredPrompt) return;
-    deferredPrompt.prompt();
-    const { outcome } = await deferredPrompt.userChoice;
-    if (outcome === 'accepted') {
-      setDeferredPrompt(null);
-    }
-  };
-
   // Local Storage Sync for Guests
   useEffect(() => {
     if (!user) {
-      try {
-        localStorage.setItem('guest_stats', JSON.stringify(stats));
-        localStorage.setItem('guest_avatar', JSON.stringify(avatar));
-      } catch (e) {
-        console.error("Failed to save to localStorage", e);
-      }
+      localStorage.setItem('guest_stats', JSON.stringify(stats));
+      localStorage.setItem('guest_avatar', JSON.stringify(avatar));
     }
   }, [stats, avatar, user]);
 
@@ -846,23 +784,6 @@ export default function App() {
                   Liderlik Tablosu
                 </button>
 
-                {deferredPrompt && (
-                  <button 
-                    onClick={handleInstallClick}
-                    className="w-full py-3 sm:py-4 bg-emerald-500 text-white rounded-[16px] sm:rounded-[20px] font-bold text-base sm:text-lg shadow-lg hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 sm:gap-3 animate-pulse"
-                  >
-                    <Settings className="w-5 h-5" />
-                    Uygulamayı Yükle
-                  </button>
-                )}
-
-                {showInstallTip && (
-                  <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl text-[10px] sm:text-xs text-blue-600 font-medium leading-relaxed">
-                    💡 iPhone'da uygulamayı yüklemek için: <br/>
-                    Alttaki <b>Paylaş</b> butonuna basıp <b>Ana Ekrana Ekle</b> seçeneğini seçebilirsin!
-                  </div>
-                )}
-
                 {!user ? (
                   <div className="pt-4 space-y-3">
                     <div className="h-px bg-[#5A5A40]/10 w-full" />
@@ -1277,18 +1198,18 @@ export default function App() {
       </div>
 
       {/* Footer */}
-      <footer className="w-full py-6 text-center text-[#5A5A40]/60 text-[10px] mt-auto flex flex-col items-center gap-1">
+      <footer className="w-full py-4 text-center text-[#5A5A40]/60 text-[10px] mt-auto">
         <p>
-          © 2026 Sayı Avcıları - Matematik Macerası
+          Created by{' '}
+          <a 
+            href="https://fuzulimedya.netlify.app/" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="font-bold hover:text-[#5A5A40] transition-colors underline underline-offset-4"
+          >
+            Fuzuli Medya
+          </a>
         </p>
-        <a 
-          href="https://fuzulimedya.netlify.app" 
-          target="_blank" 
-          rel="noopener noreferrer"
-          className="font-bold tracking-[0.2em] uppercase opacity-80 hover:opacity-100 transition-opacity cursor-pointer"
-        >
-          Fuzuli Medya
-        </a>
       </footer>
     </div>
   );
