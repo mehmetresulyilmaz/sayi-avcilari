@@ -23,4 +23,5 @@ export interface UserStats {
   badges: string[];
   completedLevels: Operation[];
   unlockedItems: string[];
+  worldLevel: number;
 }

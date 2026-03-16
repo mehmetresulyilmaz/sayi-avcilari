@@ -155,7 +155,8 @@ export default function App() {
       coins: 0,
       badges: [],
       completedLevels: [],
-      unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3']
+      unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3'],
+      worldLevel: 1
     };
   });
 
@@ -228,7 +229,8 @@ export default function App() {
             coins: 0,
             badges: [],
             completedLevels: [],
-            unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3']
+            unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3'],
+            worldLevel: 1
           },
           avatar: {
             skinColor: '#FFDBAC',
@@ -420,7 +422,7 @@ export default function App() {
   }, []);
 
   const startLevel = (levelId: Operation) => {
-    const newProblems = Array.from({ length: 5 }, (_, i) => generateProblem(levelId, i));
+    const newProblems = Array.from({ length: 5 }, (_, i) => generateProblem(levelId, i, stats.worldLevel));
     setProblems(newProblems);
     setCurrentLevelId(levelId);
     setCurrentStep(0);
@@ -499,17 +501,39 @@ export default function App() {
 
   const completeLevel = () => {
     const reward = isQuickPlay ? 20 : 100;
-    const newStats = {
+    const isLastOperationInWorld = !isQuickPlay && 
+      !stats.completedLevels.includes(currentLevelId) && 
+      stats.completedLevels.length % 4 === 3;
+
+    const newCompletedLevels = isQuickPlay 
+      ? stats.completedLevels 
+      : [...new Set([...stats.completedLevels, currentLevelId])];
+    
+    const newWorldLevel = isLastOperationInWorld ? stats.worldLevel + 1 : stats.worldLevel;
+    
+    // If we level up world, we might want to reset completedLevels for the map UI to show them as "new" again
+    // but the current logic uses completedLevels to unlock the next one.
+    // Let's make it so completedLevels only tracks the current world's progress if we want them to re-unlock.
+    // Or just keep them and change the map UI logic.
+    
+    const newStats: UserStats = {
       ...stats,
       coins: stats.coins + reward,
-      completedLevels: isQuickPlay ? stats.completedLevels : [...new Set([...stats.completedLevels, currentLevelId])],
-      badges: isQuickPlay ? stats.badges : [...new Set([...stats.badges, `${currentLevelId}_master`])]
+      completedLevels: isLastOperationInWorld ? [] : newCompletedLevels,
+      badges: isQuickPlay ? stats.badges : [...new Set([...stats.badges, `${currentLevelId}_w${stats.worldLevel}`])],
+      worldLevel: newWorldLevel
     };
     setStats(newStats);
     saveToFirestore(newStats);
     setGameState('map');
+    
+    if (isLastOperationInWorld) {
+      setMarketMessage(`TEBRİKLER! Dünya ${newWorldLevel}'e geçtin! Zorluk arttı! 🏆`);
+      setTimeout(() => setMarketMessage(null), 5000);
+    }
+
     confetti({
-      particleCount: 150,
+      particleCount: isLastOperationInWorld ? 250 : 150,
       spread: 70,
       origin: { y: 0.6 }
     });
@@ -1000,6 +1024,9 @@ export default function App() {
               className="max-w-4xl w-full px-2"
             >
               <div className="text-center mb-4 sm:mb-8">
+                <div className="inline-block px-3 py-1 bg-[#5A5A40] text-white rounded-full text-[10px] font-bold uppercase tracking-widest mb-2">
+                  Dünya {stats.worldLevel}
+                </div>
                 <h2 className="font-serif text-2xl sm:text-3xl font-bold text-[#2D2D2A] mb-0.5 sm:mb-1">Dünya Haritası</h2>
                 <p className="text-xs sm:text-sm text-[#5A5A40]">Bilgelik Kristali'ne giden yolu seç!</p>
               </div>
