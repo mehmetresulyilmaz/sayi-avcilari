@@ -148,6 +148,8 @@ export default function App() {
   const [marketMessage, setMarketMessage] = useState<string | null>(null);
   const [errorInfo, setErrorInfo] = useState<FirestoreErrorInfo | null>(null);
   const [leaderboardData, setLeaderboardData] = useState<any[]>([]);
+  const [deferredPrompt, setDeferredPrompt] = useState<any>(null);
+  const [showInstallTip, setShowInstallTip] = useState(false);
   
   const [stats, setStats] = useState<UserStats>(() => {
     const local = localStorage.getItem('guest_stats');
@@ -248,6 +250,33 @@ export default function App() {
 
     return () => unsubscribe();
   }, [user, isAuthReady]);
+
+  // PWA Install Prompt
+  useEffect(() => {
+    const handleBeforeInstallPrompt = (e: any) => {
+      e.preventDefault();
+      setDeferredPrompt(e);
+    };
+
+    const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent) && !(window as any).MSStream;
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches || (window.navigator as any).standalone;
+    
+    if (isIOS && !isStandalone) {
+      setShowInstallTip(true);
+    }
+
+    window.addEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+    return () => window.removeEventListener('beforeinstallprompt', handleBeforeInstallPrompt);
+  }, []);
+
+  const handleInstallClick = async () => {
+    if (!deferredPrompt) return;
+    deferredPrompt.prompt();
+    const { outcome } = await deferredPrompt.userChoice;
+    if (outcome === 'accepted') {
+      setDeferredPrompt(null);
+    }
+  };
 
   // Local Storage Sync for Guests
   useEffect(() => {
@@ -783,6 +812,23 @@ export default function App() {
                   <Trophy className="w-4 h-4" />
                   Liderlik Tablosu
                 </button>
+
+                {deferredPrompt && (
+                  <button 
+                    onClick={handleInstallClick}
+                    className="w-full py-3 sm:py-4 bg-emerald-500 text-white rounded-[16px] sm:rounded-[20px] font-bold text-base sm:text-lg shadow-lg hover:bg-emerald-600 transition-all flex items-center justify-center gap-2 sm:gap-3 animate-pulse"
+                  >
+                    <Settings className="w-5 h-5" />
+                    Uygulamayı Yükle
+                  </button>
+                )}
+
+                {showInstallTip && (
+                  <div className="p-4 bg-blue-50 border border-blue-100 rounded-2xl text-[10px] sm:text-xs text-blue-600 font-medium leading-relaxed">
+                    💡 iPhone'da uygulamayı yüklemek için: <br/>
+                    Alttaki <b>Paylaş</b> butonuna basıp <b>Ana Ekrana Ekle</b> seçeneğini seçebilirsin!
+                  </div>
+                )}
 
                 {!user ? (
                   <div className="pt-4 space-y-3">
