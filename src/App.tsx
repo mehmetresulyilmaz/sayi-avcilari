@@ -1246,15 +1246,7 @@ export default function App() {
       {/* Footer */}
       <footer className="w-full py-4 text-center text-[#5A5A40]/60 text-[10px] mt-auto">
         <p>
-          Created by{' '}
-          <a 
-            href="https://fuzulimedya.netlify.app/" 
-            target="_blank" 
-            rel="noopener noreferrer"
-            className="font-bold hover:text-[#5A5A40] transition-colors underline underline-offset-4"
-          >
-            Fuzuli Medya
-          </a>
+          © 2026 Sayı Avcıları - Matematik Macerası
         </p>
       </footer>
     </div>
