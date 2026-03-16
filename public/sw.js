@@ -1,4 +1,4 @@
-const CACHE_NAME = 'mat-avci-v1';
+const CACHE_NAME = 'mat-avci-v2';
 const ASSETS = [
   '/',
   '/index.html',
