@@ -152,25 +152,45 @@ export default function App() {
   const [showInstallTip, setShowInstallTip] = useState(false);
   
   const [stats, setStats] = useState<UserStats>(() => {
-    const local = localStorage.getItem('guest_stats');
-    return local ? JSON.parse(local) : {
-      coins: 0,
-      badges: [],
-      completedLevels: [],
-      unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3'],
-      worldLevel: 1
-    };
+    try {
+      const local = localStorage.getItem('guest_stats');
+      return local ? JSON.parse(local) : {
+        coins: 0,
+        badges: [],
+        completedLevels: [],
+        unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3'],
+        worldLevel: 1
+      };
+    } catch (e) {
+      return {
+        coins: 0,
+        badges: [],
+        completedLevels: [],
+        unlockedItems: ['skin-1', 'skin-2', 'skin-3', 'skin-4', 'hair-short', 'hair-spiky', 'acc-none', 'outfit-1', 'outfit-2', 'outfit-3'],
+        worldLevel: 1
+      };
+    }
   });
 
   const [avatar, setAvatar] = useState<AvatarConfig>(() => {
-    const local = localStorage.getItem('guest_avatar');
-    return local ? JSON.parse(local) : {
-      skinColor: '#FFDBAC',
-      hairStyle: 'short',
-      hairColor: '#4B2C20',
-      outfitColor: '#5A5A40',
-      accessory: 'none'
-    };
+    try {
+      const local = localStorage.getItem('guest_avatar');
+      return local ? JSON.parse(local) : {
+        skinColor: '#FFDBAC',
+        hairStyle: 'short',
+        hairColor: '#4B2C20',
+        outfitColor: '#5A5A40',
+        accessory: 'none'
+      };
+    } catch (e) {
+      return {
+        skinColor: '#FFDBAC',
+        hairStyle: 'short',
+        hairColor: '#4B2C20',
+        outfitColor: '#5A5A40',
+        accessory: 'none'
+      };
+    }
   });
 
   const [isMuted, setIsMuted] = useState(false);
@@ -208,7 +228,16 @@ export default function App() {
         setGameState('home');
       }
     });
-    return () => unsubscribe();
+
+    // Safety timeout: If loading takes more than 5 seconds, force home state
+    const timer = setTimeout(() => {
+      setGameState(prev => prev === 'loading' ? 'home' : prev);
+    }, 5000);
+
+    return () => {
+      unsubscribe();
+      clearTimeout(timer);
+    };
   }, []);
 
   // Firestore Sync
@@ -281,8 +310,12 @@ export default function App() {
   // Local Storage Sync for Guests
   useEffect(() => {
     if (!user) {
-      localStorage.setItem('guest_stats', JSON.stringify(stats));
-      localStorage.setItem('guest_avatar', JSON.stringify(avatar));
+      try {
+        localStorage.setItem('guest_stats', JSON.stringify(stats));
+        localStorage.setItem('guest_avatar', JSON.stringify(avatar));
+      } catch (e) {
+        console.error("Failed to save to localStorage", e);
+      }
     }
   }, [stats, avatar, user]);
 
